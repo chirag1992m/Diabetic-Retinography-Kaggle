@@ -1,3 +1,8 @@
+*.err #Generated error files
+*.model #models to be ignored to be uploaded (final model will be uploaded)
+#*.model.final #Final model to be uploaded
+*.log #Ignore intermediate logs
+
 # Windows image file caches
 Thumbs.db
 ehthumbs.db
