@@ -2,6 +2,7 @@
 *.model #models to be ignored to be uploaded (final model will be uploaded)
 #*.model.final #Final model to be uploaded
 *.log #Ignore intermediate logs
+*.ipynb_checkpoints*
 
 # Windows image file caches
 Thumbs.db

@@ -18,6 +18,7 @@ cmd:option('-verbose',              false,          'Print stats for every batch
 cmd:option('-suffix',               '',             'Suffix to add on all output files')
 cmd:option('-cuda',					false,			'Use cuda tensor')
 cmd:option('-nCudaThreads',         1,              'Number of CUDA dataloading threads')
+cmd:option('-noValidation',			false,			'Only training needs to be done?')
 
 local opt = cmd:parse(arg or {})
 
