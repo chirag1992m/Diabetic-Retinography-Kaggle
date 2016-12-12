@@ -10,6 +10,8 @@ label 4 - 708
 
 -- Accuracy of the majority model: 0.73478335 (According to training data)
 
+-- Kappa (Competition Evaluation Method): 0.00000 (After submission. submissions/submission_benchmark.png)
+
 local dir = io.popen("ls ./data/test_data/")
 
 lines = {}
