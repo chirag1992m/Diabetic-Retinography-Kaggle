@@ -24,9 +24,10 @@ for i=1, size do
     
     resized_2 = image.scale(cropped, 256, 256)
     image.save('../data/sample_cropped_256/' .. file_name, resized_2)
-    
-    resized_3 = image.scale(cropped, 512, 512)
-    image.save('../data/sample_cropped_512/' .. file_name, resized_3)
+
+-- Removing as no longer using 512x512 images
+--    resized_3 = image.scale(cropped, 512, 512)
+--    image.save('../data/sample_cropped_512/' .. file_name, resized_3)
 
     xlua.progress(i, size)
 end
