@@ -29,10 +29,10 @@ function getTrainSample(idx)
     if sample[2] == 1 then
         file_name = tostring(sample[1]) .. '_left.jpeg'
     else
-        file_name = tostring(sample[i][1]) .. '_right.jpeg'
+        file_name = tostring(sample[1]) .. '_right.jpeg'
     end
 
-    return resize(image.load(TRAIN_PATH .. file))
+    return resize(image.load(TRAIN_PATH .. file_name))
 end
 
 function getTrainLabel(idx)
@@ -42,8 +42,8 @@ end
 -- Pre-Load all the data!
 trainImages = torch.Tensor(trainSize, 3, options.imageSize, options.imageSize)
 trainLabels = torch.LongTensor(trainSize)
-for i=1, trainingMetadata:size(1) do
-    train_images[i] = getTrainSample(i)
+for i=1, trainSize do
+    trainImages[i] = getTrainSample(i)
     trainLabels[i] = getTrainLabel(i)
 end
 
@@ -68,7 +68,7 @@ trainDataset = tnt.SplitDataset{
 function getBatchIterator(dataset_to_iterate)
     return tnt.DatasetIterator{
         dataset = tnt.BatchDataset{
-            batchsize = opt.batchsize,
+            batchsize = options.batchsize,
             dataset = dataset_to_iterate
         }
     }

@@ -7,6 +7,8 @@ local options = require 'train_options'
 local image = require 'image'
 
 if options.cuda then
+    print("Turning CUDA on...")
+
     require 'cunn'
     require 'cudnn' -- faster convolutions
 
@@ -33,9 +35,12 @@ end
 
 print("Loading Network... ")
 local model = require("models/".. options.model)
+print('\nModel: ' .. tostring(model) .. '\n')
+print("Model Fetched!")
 
-print("Fetching data... ")
+print("\nFetching data... ")
 local data = require("dataloaders/" .. options.dataloader)
+print("Data Fetched!\n")
 
 local engine = tnt.OptimEngine()
 local meter = tnt.AverageValueMeter()
@@ -53,8 +58,6 @@ if options.cuda then
     model = model:cuda()
     criterion = criterion:cuda()
 end
-
-print('\nModel: ' .. tostring(model) .. '\n')
 
 local epoch = 1
 
