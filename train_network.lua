@@ -3,7 +3,7 @@ require 'optim'
 require 'os'
 
 local tnt = require 'torchnet'
-local options = require 'options'
+local options = require 'train_options'
 local image = require 'image'
 
 if options.cuda then
@@ -15,7 +15,12 @@ if options.cuda then
     cudnn.verbose = true
 end
 
-local file_suffix = options.suffix .. string.format("_%d", os.time());
+local file_name = ''
+if options.suffix == '' then 
+    file_name = string.format("_%d", os.time()) 
+else 
+    file_name = options.suffix
+end
 
 torch.setdefaulttensortype('torch.DoubleTensor')
 
@@ -26,12 +31,11 @@ if options.cuda then
     cutorch.manualSeedAll(options.manualSeed)
 end
 
-
-print("Fetching data... ")
-local data = require ('dataloader/' .. options.dataloader)
-
 print("Loading Network... ")
 local model = require("models/".. options.model)
+
+print("Fetching data... ")
+local data = require("dataloaders/" .. options.dataloader)
 
 local engine = tnt.OptimEngine()
 local meter = tnt.AverageValueMeter()
@@ -129,54 +133,28 @@ while epoch <= options.nEpochs do
         }
     }
 
-    engine:test{
-        network = model,
-        criterion = criterion,
-        iterator = data.getValIterator()
-    }
+    if not options.noValidation then
+        engine:test{
+            network = model,
+            criterion = criterion,
+            iterator = data.getValIterator()
+        }
+    end
 
     print('Done with Epoch '..tostring(epoch))
     epoch = epoch + 1
 end
 
-local submission = assert(io.open("submissions/submission_" .. file_suffix .. ".csv", "w"))
-submission:write("image,level\n")
-batch = 1
-
---[[
---  This piece of code creates the submission
---  file that has to be uploaded on kaggle.
---]]
-engine.hooks.onForward = function(state)
-    local fileNames  = state.sample.target
-    local _, pred = state.network.output:max(2)
-    pred = pred - 1
-    for i = 1, pred:size(1) do
-        submission:write(string.format("%05d,%d\n", fileNames[i][1], pred[i][1]))
-    end
-
-    if options.verbose == true then
-        print(string.format("%s Batch: %d/%d;", "test", batch, state.iterator.dataset:size()))
-    end
-
-    batch = batch + 1
-end
-
-engine.hooks.onEnd = function(state)
-    submission:close()
-end
-
-engine:test{
-    network = model,
-    iterator = data.getTestIterator()
-}
-
 -- Dump the results in files
-model:clearState()
-torch.save("run_models/model_" .. file_suffix .. ".model", model)
+if not options.dontSave then
+    model:clearState()
+    torch.save("run_models/" .. file_name .. ".model", model)
 
-torch.save("logs/trainingErrors_" .. file_suffix .. ".log", torch.Tensor(trainingErrors))
-torch.save("logs/trainingLosses_" .. file_suffix .. ".log", torch.Tensor(trainingLosses))
-torch.save("logs/validationErrors_" .. file_suffix .. ".log", torch.Tensor(validationErrors))
-torch.save("logs/validationLosses_" .. file_suffix .. ".log", torch.Tensor(validationLosses))
-torch.save("logs/timers" .. file_suffix .. ".log", torch.Tensor(timeVals))
+    torch.save("logs/trainingErrors/" .. file_name .. ".log", torch.Tensor(trainingErrors))
+    torch.save("logs/trainingLosses/" .. file_name .. ".log", torch.Tensor(trainingLosses))
+    if not options.noValidation then
+        torch.save("logs/validationErrors/" .. file_name .. ".log", torch.Tensor(validationErrors))
+        torch.save("logs/validationLosses/" .. file_name .. ".log", torch.Tensor(validationLosses))
+    end
+    torch.save("logs/timers/" .. file_name .. ".log", torch.Tensor(timeVals))
+end

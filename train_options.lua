@@ -6,6 +6,7 @@ cmd:text()
 cmd:text('Options:')
 cmd:option('-dataloader',           '',             'Dataloader to use')
 cmd:option('-model',                '',             'Model to use for training')
+cmd:option('-imageSize',			128,			'Image Size as input')
 cmd:option('-nEpochs',              50,             'Maximum epochs')
 cmd:option('-batchsize',            128,            'Batch size for epochs')
 cmd:option('-nThreads',             1,              'Number of dataloading threads')
@@ -19,6 +20,7 @@ cmd:option('-suffix',               '',             'Suffix to add on all output
 cmd:option('-cuda',					false,			'Use cuda tensor')
 cmd:option('-nCudaThreads',         1,              'Number of CUDA dataloading threads')
 cmd:option('-noValidation',			false,			'Only training needs to be done?')
+cmd:option('-dontSave',				false,			'Don\'t save the readings')
 
 local opt = cmd:parse(arg or {})
 
@@ -28,6 +30,10 @@ end
 
 if opt.dataloader == '' or not paths.filep('dataloaders/'..opt.dataloader..'.lua') then
     cmd:error('Invalid dataloader ' .. opt.dataloader)
+end
+
+if opt.imageSize < 1 or opt.imageSize > 256 then
+	cmd:error('Invalid imageSize ' .. opt.imageSize)
 end
 
 return opt
