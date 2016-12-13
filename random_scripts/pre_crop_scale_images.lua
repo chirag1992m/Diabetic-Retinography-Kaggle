@@ -2,7 +2,7 @@ require 'torch'
 require 'xlua'
 image = require 'image'
 
-data = torch.load('../data/sample_full_metadata.t7')
+data = torch.load('../data/sample/sample_full_metadata.t7')
 size = data:size(1)
 
 for i=1, size do
