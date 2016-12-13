@@ -40,6 +40,7 @@ torch.save('../data/sample_cropped_128/normalize_parameters.t7', normalize_param
 
 --For pre_processes 256x256 files
 images = torch.Tensor(size, 3, 256, 256)
+collectgarbage()
 for i=1, size do
     if sample[i][2] == 1 then
         image_name = tostring(sample[i][1]) .. '_left.jpeg'
@@ -59,6 +60,7 @@ torch.save('../data/sample_cropped_256/normalize_parameters.t7', normalize_param
 
 --For pre_processes 512x512 files
 images = torch.Tensor(size, 3, 512, 512)
+collectgarbage()
 for i=1, size do
     if sample[i][2] == 1 then
         image_name = tostring(sample[i][1]) .. '_left.jpeg'

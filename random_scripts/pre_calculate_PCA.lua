@@ -30,6 +30,7 @@ torch.save('../data/sample_cropped_128/PCA.t7', PCA)
 
 --Calculating PCA for 256x256 images
 images = torch.Tensor(size, 3, 256, 256)
+collectgarbage()
 for i=1,size do
     if sample[i][2] == 1 then
         file_name = tostring(sample[i][1]) .. '_left.jpeg'
@@ -53,6 +54,7 @@ torch.save('../data/sample_cropped_256/PCA.t7', PCA)
 
 --Calculating PCA for 512x512 images
 images = torch.Tensor(size, 3, 512, 512)
+collectgarbage()
 for i=1,size do
     if sample[i][2] == 1 then
         file_name = tostring(sample[i][1]) .. '_left.jpeg'

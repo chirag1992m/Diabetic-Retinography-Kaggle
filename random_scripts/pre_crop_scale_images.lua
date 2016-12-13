@@ -6,6 +6,8 @@ data = torch.load('../data/sample/sample_full_metadata.t7')
 size = data:size(1)
 
 for i=1, size do
+    collectgarbage() --remove unnecessary used memory. Greatly increases performance too!
+
     if data[i][2] == 1 then
         file_name = string.format("%d_left.jpeg", data[i][1])
     else
