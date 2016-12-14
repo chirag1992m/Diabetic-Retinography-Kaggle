@@ -94,14 +94,6 @@ engine.hooks.onForwardCriterion = function(state)
                 mode, batch, meter:value(), clerr:value{k = 1}))
     end
 
-    if mode == 'Train' then
-        intermediateTL[batch] = meter:value()
-        intermediateTE[batch] = clerr:value{k = 1}
-    else
-        intermediateVL[batch] = meter:value()
-        intermediateVE[batch] = clerr:value{k = 1}
-    end
-
     batch = batch + 1 -- batch increment has to happen here to work for train, val and test.
     timer:incUnit()
 end

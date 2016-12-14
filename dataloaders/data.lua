@@ -41,7 +41,7 @@ end
 
 -- Pre-Load all the data!
 trainImages = torch.Tensor(trainSize, 3, options.imageSize, options.imageSize)
-trainLabels = torch.LongTensor(trainSize)
+trainLabels = torch.LongTensor(trainSize, 1)
 for i=1, trainSize do
     trainImages[i] = getTrainSample(i)
     trainLabels[i] = getTrainLabel(i)
