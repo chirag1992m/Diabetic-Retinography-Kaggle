@@ -32,6 +32,8 @@ if options.cuda then
     cudnn.verbose = true
 end
 
+torch.setdefaulttensortype('torch.DoubleTensor')
+
 local file_name = options.model
 
 local trained_network = torch.load('run_models/'..options.model..'.model')
@@ -54,18 +56,7 @@ function resize(img)
     return image.scale(img, options.imageSize, options.imageSize)
 end
 
-function getTestSample(idx)
-    sample = testingMetadata[idx]
-    if sample[2] == 1 then
-        file_name = tostring(sample[1]) .. '_left.jpeg'
-    else
-        file_name = tostring(sample[1]) .. '_right.jpeg'
-    end
-
-    return resize(image.load(TEST_PATH .. file_name))
-end
-
-function getTestLabel(idx)
+function getFileName(idx)
     sample = testingMetadata[idx]
     if sample[2] == 1 then
         file_name = tostring(sample[1]) .. '_left.jpeg'
@@ -74,6 +65,14 @@ function getTestLabel(idx)
     end
 
     return file_name
+end
+
+function getTestSample(idx)
+    return resize(image.load(TEST_PATH .. getFileName(idx)))
+end
+
+function getTestLabel(idx)
+    return torch.LongTensor{idx}
 end
 
 function getBatchIterator(dataset_to_iterate)
@@ -107,17 +106,27 @@ batch = 1
 
 local engine = tnt.OptimEngine()
 
+if options.cuda then
+    local inputGPU = torch.CudaTensor()
+    local targetGPU = torch.CudaTensor()
+    
+    engine.hooks.onSample = function(state)
+        inputGPU:resize(state.sample.input:size() ):copy(state.sample.input)
+        targetGPU:resize(state.sample.target:size()):copy(state.sample.target)
+        state.sample.input  = inputGPU
+        state.sample.target = targetGPU
+    end
+end
+
 engine.hooks.onForward = function(state)
     local fileNames  = state.sample.target
     local _, pred = state.network.output:max(2)
     pred = pred - 1
     for i = 1, pred:size(1) do
-        submission:write(string.format("%05d,%d\n", fileNames[i][1], pred[i][1]))
+        submission:write(string.format("%s,%d\n", getFileName(fileNames[i][1]), pred[i][1]))
     end
 
-    if options.verbose == true then
-        print(string.format("%s Batch: %d/%d;", "test", batch, state.iterator.dataset:size()))
-    end
+    print(string.format("%s Batch: %d/%d;", "test", batch, state.iterator.dataset:size()))
 
     batch = batch + 1
 end
