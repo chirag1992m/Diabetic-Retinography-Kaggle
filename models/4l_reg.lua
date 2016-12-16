@@ -1,5 +1,5 @@
--- A basic/shallow 6_layer ConvNet.
--- inspired from 6_layer.lua
+-- A basic/shallow 4_layer ConvNet.
+-- inspired from 4_layer.lua
 -- Added a regularization layer (As last model was overfitting on train set)
 -- Change the number of neurons in last FC layers
 

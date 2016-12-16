@@ -1,4 +1,4 @@
--- A basic/shallow 6_layer ConvNet for testing code
+-- A basic/shallow 4_layer ConvNet for testing code
 
 --Takes in input of size 128x128
 
