@@ -43,10 +43,11 @@ model:add(NonLin(leakyReluParameter))
 model:add(MaxPool(2,2,2,2)) -- 64*13*13
 
 model:add(Conv(64, 128, 3, 3)) -- 128*11*11
-model:add(SBNorm())
+model:add(SBNorm(128))
 model:add(NonLin(leakyReluParameter))
 
 model:add(Conv(128, 128, 3, 3)) -- 128*9*9
+model:add(SBNorm(128))
 model:add(NonLin(leakyReluParameter))
 
 model:add(MaxPool(2,2,2,2)) -- 128*4*4
