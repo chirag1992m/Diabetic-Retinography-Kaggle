@@ -87,15 +87,31 @@ function M.getValIterator()
     return getBatchIterator(trainDataset)
 end
 
-function M.getTrainIterator()
-    trainDataset:select('train')
-    return getBatchIterator(trainDataset)
-end
+if options.cuda then
+    M.getTrainIterator = function ()
+        trainDataset:select('train')
 
-function M.getTestIterator()
-    --We currently don't have the test set (It's still undergoing pre-processing)
-    trainDataset:select('val')
-    return getBatchIterator(trainDataset)
+        return tnt.ParallelDatasetIterator {
+            nthread = opt.nCudaThreads,
+
+            init = function ()
+                local tnt = require 'torchnet'
+            end,
+
+            closure = function ()
+                return tnt.BatchDataset {
+                    batchsize = options.batchsize,
+
+                    dataset = trainDataset
+                }
+            end
+        }
+    end
+else
+    M.getTrainIterator = function ()
+        trainDataset:select('train')
+        return getBatchIterator(trainDataset)
+    end
 end
 
 return M
