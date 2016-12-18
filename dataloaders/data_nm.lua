@@ -92,7 +92,7 @@ if options.cuda then
         trainDataset:select('train')
 
         return tnt.ParallelDatasetIterator {
-            nthread = opt.nCudaThreads,
+            nthread = options.nCudaThreads,
 
             init = function ()
                 local tnt = require 'torchnet'
