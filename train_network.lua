@@ -79,7 +79,7 @@ if options.cuda then
     local targetGPU = torch.CudaTensor()
     
     engine.hooks.onSample = function(state)
-        inputGPU:resize(state.sample.input:size() ):copy(state.sample.input)
+        inputGPU:resize(state.sample.input:size()):copy(state.sample.input)
         targetGPU:resize(state.sample.target:size()):copy(state.sample.target)
         state.sample.input  = inputGPU
         state.sample.target = targetGPU
