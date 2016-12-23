@@ -10,7 +10,6 @@ local perturb = require '../lib/perturbations'
 -- Current directory changes to the running directory
 local trainingMetadata = torch.load('./data/train_data/train_full_metadata.t7')
 local trainSize = trainingMetadata:size(1)
-trainSize = 20
 
 local TRAIN_PATH = './data/train_cropped_'
 if options.imageSize <= 128 then
